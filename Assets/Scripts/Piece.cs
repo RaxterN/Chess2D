@@ -23,7 +23,8 @@ public abstract class Piece : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Sets the initial position of a piece
+	/// Sets the initial position of a piece, calling BoardManager to place the piece without
+	/// recording a move or starting the next turn. Use this for initializing pieces
 	/// </summary>
 	/// <param name="position"></param>
 	public void SetInitialPosition(Vector2Int position)
@@ -33,15 +34,15 @@ public abstract class Piece : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Sets the currentPosition of the piece without setting the physical position
-	/// This is primarily for setting the initial position after instantiation, because 
-	/// instantiation sets the physical postion already 
+	/// Sets the currentPosition of the piece and calls BoardManager to record the move, destroy 
+	/// any piece in the target position, and start the next turn. Use this after pieces have been
+	/// initialized and the game has started
 	/// </summary>
 	/// <param name="position"></param>
 	public void SetPosition(Vector2Int position)
 	{
-		boardManager.MovePiece(position, this);
 		currentPosition = position;
+		boardManager.MovePiece(position, this);
 		Debug.Log($"Piece's current position is now ({position.x}, {position.y})");
 	}
 

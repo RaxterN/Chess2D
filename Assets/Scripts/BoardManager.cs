@@ -37,7 +37,8 @@ public class BoardManager : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Moves the recorded location of a piece in the gameBoard and clears the target position
+	/// Moves the recorded location of a piece in the gameBoard, clears the target position, 
+	/// and starts the next turn
 	/// </summary>
 	/// <param name="newPosition">The position the piece is moving to</param>
 	/// <param name="piece">The piece</param>
@@ -68,8 +69,8 @@ public class BoardManager : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Only sets the position of a piece in the gameBoard without clearing
-	/// Use this for initial placement of pieces
+	/// Only sets the position of a piece in the gameBoard without starting the 
+	/// next turn or recording the move. Use this for initializing the board
 	/// </summary>
 	/// <param name="position">Position of piece</param>
 	/// <param name="piece">Piece</param>

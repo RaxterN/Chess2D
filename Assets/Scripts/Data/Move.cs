@@ -11,7 +11,7 @@ public struct Move
     public Vector2Int endPosition;
     Piece piece;
 
-	public Move(Vector2Int newPosition, Vector2Int currentPosition, Piece piece) : this()
+	public Move(Vector2Int newPosition, Vector2Int currentPosition, Piece piece)
 	{
 		startPosition = currentPosition;
 		endPosition = newPosition;

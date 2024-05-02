@@ -49,7 +49,7 @@ public class FileManager : MonoBehaviour
 					}
 					else
 					{
-						string type = piece.GetType().Name;
+						string type = piece.type.ToString();
 						string color;
 						if (piece.color == PieceColor.White)
 						{
@@ -68,7 +68,7 @@ public class FileManager : MonoBehaviour
 		}
 		Debug.Log("Game has been saved.");
 	} //to view this file yourself go to users/user/appdata/LocalLow/(company name)/Chess2D
-	  //the default company name seems to be DefaultCompany
+	  //the default company name is DefaultCompany
 
 	/// <summary>
 	/// This method handles loading the game from the save file***************** to implement
@@ -77,7 +77,3 @@ public class FileManager : MonoBehaviour
 	{
 	}
 }
-
-/* CITATIONS: ***********************
- *		https://chat.openai.com/share/d0185fe6-d511-464b-8d48-5e28ec874fa4 for how I got the file path and everything
- */

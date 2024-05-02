@@ -21,8 +21,7 @@ public class PieceInteraction : MonoBehaviour
 	// Start is called before the first frame update
 	void Start()
 	{
-		//get boardManager reference on piece instantiation
-		//this works because there will only ever be one BoardManager in the scene
+		//get boardManager reference on piece instantiation 
 		boardManager = FindObjectOfType<BoardManager>();
 		//get reference to the piece script
 		pieceScript = GetComponent<Piece>();
