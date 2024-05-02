@@ -41,8 +41,8 @@ public abstract class Piece : MonoBehaviour
 	/// <param name="position"></param>
 	public void SetPosition(Vector2Int position)
 	{
-		currentPosition = position;
-		boardManager.MovePiece(position, this);
+		boardManager.MovePiece(position, this); //these two lines have to be in 
+		currentPosition = position;             //this order or it doesn't record the move properly 
 		Debug.Log($"Piece's current position is now ({position.x}, {position.y})");
 	}
 
