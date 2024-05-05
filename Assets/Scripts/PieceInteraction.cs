@@ -32,7 +32,7 @@ public class PieceInteraction : MonoBehaviour
 	/// </summary>
 	void OnMouseDown()
 	{
-		if (pieceScript.GetColor() == boardManager.GetColorTurn())
+		if (pieceScript.GetColor() == boardManager.GetCurrentTurn())
 		{
 			screenPoint = Camera.main.WorldToScreenPoint(gameObject.transform.position);
 			offset = gameObject.transform.position - Camera.main.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z));
@@ -54,7 +54,7 @@ public class PieceInteraction : MonoBehaviour
 	/// </summary>
 	void OnMouseDrag()
 	{
-		if (pieceScript.color == boardManager.GetColorTurn())
+		if (pieceScript.color == boardManager.GetCurrentTurn())
 		{
 			Vector3 cursorPoint = new Vector3(Input.mousePosition.x, Input.mousePosition.y, screenPoint.z);
 			Vector3 cursorPosition = Camera.main.ScreenToWorldPoint(cursorPoint) + offset;
@@ -70,7 +70,7 @@ public class PieceInteraction : MonoBehaviour
 	/// </summary>
 	void OnMouseUp()
 	{
-		if (pieceScript.color == boardManager.GetColorTurn())
+		if (pieceScript.color == boardManager.GetCurrentTurn())
 		{
 			//get the potential move in Vector2Int
 			Vector2Int potentialMove = new Vector2Int(Mathf.RoundToInt(dropPosition.x), Mathf.RoundToInt(dropPosition.y));

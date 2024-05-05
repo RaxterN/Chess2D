@@ -14,6 +14,7 @@ public class Pawn : Piece
 	public override List<Vector2Int> GetMoves()
 	{
 		List<Vector2Int> moves = new List<Vector2Int>();
+		int direction = color == PieceColor.White ? 1 : -1;
 
 		//if piece is white y increments will be positive, negative if black
 		//because pawns always move 'forward' from their side
@@ -64,6 +65,26 @@ public class Pawn : Piece
 			if (boardManager.GetPieceAtPosition(takePosition2) != null && boardManager.GetPieceAtPosition(takePosition2).color != color)
 			{
 				moves.Add(takePosition2);
+			}
+		}
+
+		//check for en passant opportunities 
+		if (boardManager.GetTurnCount() > 0)//must have a move in the Moves stack to check
+		{
+			Move lastMove = boardManager.moves.Peek();
+			if (boardManager.IsDoublePawnMove(lastMove)) //if the last move was double pawn move
+			{
+				if (lastMove.endPosition.x == currentPosition.x + 1 || lastMove.endPosition.x == currentPosition.x - 1)//if the moved pawn is next to this pawn
+				{
+					if (lastMove.endPosition.y == currentPosition.y)
+					{
+						Vector2Int enPassantCapture = new Vector2Int(lastMove.endPosition.x, lastMove.endPosition.y + direction);
+						if (boardManager.IsWithinBounds(enPassantCapture))
+						{
+							moves.Add(enPassantCapture);
+						}
+					}
+				}
 			}
 		}
 		return moves;

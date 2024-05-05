@@ -48,21 +48,23 @@ public class BoardManager : MonoBehaviour
 		Move move = new Move(newPosition, piece.currentPosition, piece);
 		moves.Push(move);
 
+		//Handle en passant moves
+		if (IsEnPassant(piece, newPosition))
+		{
+			Vector2Int enPassantCapturedPosition = new Vector2Int(newPosition.x, piece.currentPosition.y);
+			DestroyPieceAtPosition(enPassantCapturedPosition);
+		}
+
 		//clear the original position of the piece
 		gameBoard.ClearPosition(piece.currentPosition.x, piece.currentPosition.y);
 
+
 		//destroy any piece at the target position
-		int x = newPosition.x;
-		int y = newPosition.y;
-		Piece targetPiece = gameBoard.GetPieceAtPosition(x, y);
-		if (targetPiece != null)
-		{
-			Destroy(targetPiece.gameObject);
-		}
+		DestroyPieceAtPosition(newPosition);
 
 		//clear and set target position with new piece
-		gameBoard.ClearPosition(x, y);
-		gameBoard.SetPosition(piece, x, y);
+		gameBoard.ClearPosition(newPosition.x, newPosition.y);
+		gameBoard.SetPosition(piece, newPosition.x, newPosition.y);
 
 		NextTurn();
 		PrintGameState();//debug log the state
@@ -96,6 +98,18 @@ public class BoardManager : MonoBehaviour
 		return piece;
 	}
 
+	public void DestroyPieceAtPosition(Vector2Int targetPostion)
+	{
+		int x = targetPostion.x;
+		int y = targetPostion.y;
+		Piece targetPiece = gameBoard.GetPieceAtPosition(x, y);
+		if (targetPiece != null)
+		{
+			Destroy(targetPiece.gameObject);
+		}
+		return;
+	}
+
 	/// <summary>
 	/// This method will call when a valid move is made and flip the board and set the appropriate variable
 	/// </summary>
@@ -117,12 +131,12 @@ public class BoardManager : MonoBehaviour
 	}
 
 	/// <summary>
-	/// Returns the color of the current player's turn
+	/// Returns the current turn count
 	/// </summary>
-	/// <returns>PieceColor</returns>
-	public PieceColor GetColorTurn()
+	/// <returns>Int</returns>
+	public int GetTurnCount()
 	{
-		return currentTurn;
+		return turnCount;
 	}
 
 	/// <summary>
@@ -221,6 +235,45 @@ public class BoardManager : MonoBehaviour
 	}
 
 	/// <summary>
+	/// Checks whether a move was a double pawn move
+	/// </summary>
+	/// <param name="move">Move to check</param>
+	/// <returns>Bool</returns>
+	public bool IsDoublePawnMove(Move move)
+	{
+		if (move.piece.type == PieceType.Pawn)
+		{
+			if (Math.Abs(move.startPosition.y - move.endPosition.y) == 2)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/// <summary>
+	/// Checks if the current move operation is an en passant move. Note that this does not check a Move, 
+	/// but rather checks the values associated with moving a piece
+	/// </summary>
+	/// <param name="piece">The piece moving</param>
+	/// <param name="newPostion">The new position of the piece</param>
+	/// <returns></returns>
+	public bool IsEnPassant(Piece piece, Vector2Int newPostion)
+	{
+		if (piece.type == PieceType.Pawn)//must be a pawn moving
+		{
+			if (GetPieceAtPosition(newPostion) == null)//target position must be empty
+			{
+				if (piece.currentPosition.x != newPostion.x)//pawn must be capturing to the side
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	/// <summary>
 	/// Prints the game state to console
 	/// </summary>
 	public void PrintGameState()
@@ -255,6 +308,4 @@ public class BoardManager : MonoBehaviour
  * 
  * https://docs.unity3d.com/Manual/Tags.html for how to find objects in the scene using tags
  * The camera in unity seems to be pre-tagged as MainCamera
- * 
- * https://chat.openai.com/share/2d0bf783-15be-4885-83e9-85c8eec60235 for how I made the RotatePieces method
- */
+*/
