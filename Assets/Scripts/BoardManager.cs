@@ -25,7 +25,6 @@ public class BoardManager : MonoBehaviour
 
 	private void Awake()
 	{
-		//This must happen in Awake() or the BoardInitializer can't capture the reference on Start()
 		gameBoard = new Board();
 		currentTurn = PieceColor.White;
 		mainCamera = GameObject.FindGameObjectWithTag("MainCamera");
@@ -42,7 +41,7 @@ public class BoardManager : MonoBehaviour
 	/// </summary>
 	/// <param name="newPosition">The position the piece is moving to</param>
 	/// <param name="piece">The piece</param>
-	public void MovePiece(Vector2Int newPosition, Piece piece)
+	public void CommitMove(Vector2Int newPosition, Piece piece)
 	{
 		//Record the move
 		Move move = new Move(newPosition, piece.currentPosition, piece);
@@ -55,9 +54,28 @@ public class BoardManager : MonoBehaviour
 			DestroyPieceAtPosition(enPassantCapturedPosition);
 		}
 
+		//Handle castling moves
+		if (piece.type == PieceType.King && Math.Abs(newPosition.x - piece.currentPosition.x) == 2)//a king moving two squares will always be a castle
+		{
+			//Castling attempt, determine if kingside or queenside
+			bool isKingside = newPosition.x > piece.currentPosition.x;
+			Vector2Int rookOriginalPosition = isKingside ? new Vector2Int(7, newPosition.y) : new Vector2Int(0, newPosition.y);
+			Vector2Int rookNewPosition = isKingside ? new Vector2Int(5, newPosition.y) : new Vector2Int(3, newPosition.y);
+
+			//Move the rook
+			Piece rook = GetPieceAtPosition(rookOriginalPosition);                      
+			Vector3 newPhysicalPosition = BoardToScenePosition(rookNewPosition);
+			rook.GetComponent<PieceInteraction>().MoveTo(newPhysicalPosition);
+
+			//Update the board state to reflect rook moving
+			gameBoard.ClearPosition(rook.currentPosition.x, rook.currentPosition.y);
+			gameBoard.SetPosition(rook, rookNewPosition.x, rookNewPosition.y);
+			rook.currentPosition = rookNewPosition;
+			rook.hasMoved = true;
+		}
+
 		//clear the original position of the piece
 		gameBoard.ClearPosition(piece.currentPosition.x, piece.currentPosition.y);
-
 
 		//destroy any piece at the target position
 		DestroyPieceAtPosition(newPosition);
@@ -72,7 +90,7 @@ public class BoardManager : MonoBehaviour
 
 	/// <summary>
 	/// Only sets the position of a piece in the gameBoard without starting the 
-	/// next turn or recording the move. Use this for initializing the board
+	/// next turn or recording the move. Use this for initializing the board, during castling etc.
 	/// </summary>
 	/// <param name="position">Position of piece</param>
 	/// <param name="piece">Piece</param>
@@ -98,6 +116,10 @@ public class BoardManager : MonoBehaviour
 		return piece;
 	}
 
+	/// <summary>
+	/// Destroys the gameobject associated with a piece at a certain position in the gameBoard
+	/// </summary>
+	/// <param name="targetPostion">Position to clear</param>
 	public void DestroyPieceAtPosition(Vector2Int targetPostion)
 	{
 		int x = targetPostion.x;
@@ -271,6 +293,17 @@ public class BoardManager : MonoBehaviour
 			}
 		}
 		return false;
+	}
+
+	/// <summary>
+	/// COnverts a Vector2Int board position into a Vector3 world position
+	/// </summary>
+	/// <param name="boardPosition">Position of the piece of the board</param>
+	/// <returns>Vector3</returns>
+	private Vector3 BoardToScenePosition(Vector2Int boardPosition)
+	{
+		// Implementation needed to translate board coordinates to Unity world coordinates
+		return new Vector3(boardPosition.x, boardPosition.y);
 	}
 
 	/// <summary>

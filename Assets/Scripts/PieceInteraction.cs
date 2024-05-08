@@ -132,6 +132,16 @@ public class PieceInteraction : MonoBehaviour
 		}
 		currentMoveSquares.Clear();
 	}
+
+	/// <summary>
+	/// Moves the piece gameobject to a specific location. Use this for when the boardManager requires a piece to 
+	/// move without being selected, such as during castling 
+	/// </summary>
+	/// <param name="newPosition">World position to move to</param>
+	public void MoveTo(Vector3 newPosition)
+	{
+		transform.position = newPosition;
+	}
 }
 
 

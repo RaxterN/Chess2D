@@ -87,7 +87,7 @@ public class BoardInitializer : MonoBehaviour
 				   This works because each script (Rook, Pawn, King etc.) are inheriting from Piece and unity gets subclasses of Piece*/
 				GameObject pieceObject = Instantiate(sp.prefab, spawnPos, Quaternion.identity); 
 				Piece pieceScript = pieceObject.GetComponent<Piece>();
-				pieceScript.SetInitialPosition(position);
+				pieceScript.SetPositionOnly(position);
 			}
 		}
 	}

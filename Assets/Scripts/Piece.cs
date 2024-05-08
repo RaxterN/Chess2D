@@ -12,6 +12,7 @@ public abstract class Piece : MonoBehaviour
 	public PieceColor color;
 	public PieceType type;
 	public Vector2Int currentPosition;
+	public bool hasMoved = false;
 
 
 	// Start is called before the first frame update
@@ -27,7 +28,7 @@ public abstract class Piece : MonoBehaviour
 	/// recording a move or starting the next turn. Use this for initializing pieces
 	/// </summary>
 	/// <param name="position"></param>
-	public void SetInitialPosition(Vector2Int position)
+	public void SetPositionOnly(Vector2Int position)
 	{
 		currentPosition = position;
 		boardManager.PlacePiece(position, this);
@@ -41,8 +42,9 @@ public abstract class Piece : MonoBehaviour
 	/// <param name="position"></param>
 	public void SetPosition(Vector2Int position)
 	{
-		boardManager.MovePiece(position, this); //these two lines have to be in 
+		boardManager.CommitMove(position, this); //these two lines have to be in 
 		currentPosition = position;             //this order or it doesn't record the move properly 
+		hasMoved = true;
 		Debug.Log($"Piece's current position is now ({position.x}, {position.y})");
 	}
 
